@@ -2,6 +2,7 @@ package com.universidad.reservaslabs.service;
 
 import com.universidad.reservaslabs.exception.RecursoNoEncontradoException;
 import com.universidad.reservaslabs.exception.ReservaConflictException;
+import com.universidad.reservaslabs.exception.ReservaInvalidaException;
 import com.universidad.reservaslabs.model.EstadoReserva;
 import com.universidad.reservaslabs.model.Laboratorio;
 import com.universidad.reservaslabs.model.Reserva;
@@ -79,17 +80,17 @@ public class ReservaService {
 
     private void validarHorarioYDuracion(LocalDateTime inicio, LocalDateTime fin) {
         if (inicio == null || fin == null || !fin.isAfter(inicio)) {
-            throw new ReservaConflictException("El rango de fecha y hora de la reserva es inválido");
+            throw new ReservaInvalidaException("El rango de fecha y hora de la reserva es inválido");
         }
 
         Duration duracion = Duration.between(inicio, fin);
         if (duracion.compareTo(DURACION_MINIMA) < 0 || duracion.compareTo(DURACION_MAXIMA) > 0) {
-            throw new ReservaConflictException(
+            throw new ReservaInvalidaException(
                     "La duración de la reserva debe estar entre 30 minutos y 3 horas");
         }
 
         if (inicio.toLocalTime().isBefore(APERTURA) || fin.toLocalTime().isAfter(CIERRE)) {
-            throw new ReservaConflictException(
+            throw new ReservaInvalidaException(
                     "La reserva debe estar dentro del horario de atención (07:00 - 21:00)");
         }
     }
